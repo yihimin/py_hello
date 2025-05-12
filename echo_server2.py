@@ -23,7 +23,7 @@ while True:
 
     #5-1. 데이터 송신
     conn.sendall(read_data)
-    print("send : {}".format(read_data))
+    print("send : {}".format(read_data.decode()))
 
 #6.접속 종료 (클라이언트 연결 종료 + 서버 소켓도 종료)
 conn.close()

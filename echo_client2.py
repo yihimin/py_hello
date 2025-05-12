@@ -11,7 +11,7 @@ while True:
         break
 
     recv_data = sock.recv(1024)
-    print(f"recv: {recv_data}")
+    print(f"recv: {recv_data.decode()}")
 
 print("클라이언트 종료!")
 sock.close()
