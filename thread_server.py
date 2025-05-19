@@ -25,7 +25,7 @@ sock.listen()
 print("The server start.....")
 
 # 클라이언트 접속 수락 (소켓 객체와 주소 반환)
-conn, addr = sock.accept()  # ✅ 괄호 꼭 필요!
+conn, addr = sock.accept()  
 
 # 수신 전용 스레드 생성 및 실행
 recv_handler = threading.Thread(target=thread_recv, args=(conn, addr))  # ✅ 튜플로 전달!
