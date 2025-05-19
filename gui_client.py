@@ -4,6 +4,18 @@ import socket
 from threading import Thread
 import datetime
 
+# 사용자별 색상 저장 딕셔너리
+user_colors = {}
+color_palette = ["#FF6B6B", "#6BCB77", "#4D96FF", "#FFC75F", "#A66DD4", "#FF9671"]
+color_index = 0
+
+def assign_color(username):
+    global color_index
+    if username not in user_colors:
+        user_colors[username] = color_palette[color_index % len(color_palette)]
+        color_index += 1
+    return user_colors[username]
+
 def send(event=None):
     msg = input_msg.get()
     if msg:
@@ -25,13 +37,26 @@ def recvMessage():
             now = datetime.datetime.now().strftime("%H:%M:%S")
             decoded = msg.decode("utf-8")
 
-            # 시간 붙인 메시지
-            formatted = f"⏰ [{now}] {decoded}\n"
+            # 사용자명 추출 (형식: [username]: 메시지)
+            if decoded.startswith("[") and "]" in decoded:
+                end = decoded.index("]")
+                username = decoded[1:end]
+                color = assign_color(username)
+                tag = f"user_{username}"
 
-            chat_box.config(state="normal")
-            chat_box.insert(tk.END, formatted)
-            chat_box.config(state="disabled")
-            chat_box.see(tk.END)
+                chat_box.tag_config(tag, foreground=color)
+
+                chat_box.config(state="normal")
+                chat_box.insert(tk.END, f"⏰ [{now}] ", "time")
+                chat_box.insert(tk.END, decoded + "\n", tag)
+                chat_box.config(state="disabled")
+                chat_box.see(tk.END)
+            else:
+                # 시스템 메시지 or 오류
+                chat_box.config(state="normal")
+                chat_box.insert(tk.END, f"⏰ [{now}] {decoded}\n", "system")
+                chat_box.config(state="disabled")
+                chat_box.see(tk.END)
     except:
         chat_box.config(state="normal")
         chat_box.insert(tk.END, "🚫 서버와의 연결이 종료되었습니다.\n")
@@ -49,7 +74,7 @@ ENTRY_COLOR = "#3c3f41"
 
 # 🎛️ GUI 구성
 win = tk.Tk()
-win.title("🌙 희민's 귓속말 채팅기")
+win.title("🌙 희민's 컬러 채팅기")
 win.geometry("520x400")
 win.configure(bg=BG_COLOR)
 win.protocol("WM_DELETE_WINDOW", on_delete)
@@ -65,6 +90,9 @@ chat_box = tk.Text(chat_frame, height=20, width=60, font=("Helvetica", 11),
                    bg=BG_COLOR, fg=FG_COLOR, wrap="word", borderwidth=0)
 chat_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 chat_box.config(state="disabled")
+chat_box.tag_config("time", foreground="#aaaaaa")
+chat_box.tag_config("system", foreground="#9999ff")
+
 scrollbar = tk.Scrollbar(chat_frame, command=chat_box.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 chat_box["yscrollcommand"] = scrollbar.set
