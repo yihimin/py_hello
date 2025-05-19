@@ -2,7 +2,7 @@ import socketserver  # socket + thread + 처리기능을 포함한 서버 프레
 
 # ➊ 요청이 올 때마다 호출될 Handler 클래스 정의
 class MyHandler(socketserver.BaseRequestHandler):
-    def handle(self):
+    def handle(self): #오버라이딩
         # ➋ 클라이언트가 보낸 데이터 수신
         self.data = self.request.recv(1024)
         print("데이터 수신: {}".format(self.data.decode()))

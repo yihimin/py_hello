@@ -59,7 +59,7 @@ class MyHandler(socketserver.BaseRequestHandler):
         print("[{}] 접속종료".format(username))
         self.delUser(username)  # 유저 목록에서 제거
 
-# 🧱 서버 클래스: 멀티스레딩 기능 추가한 TCP 서버 정의
+# 🧱 서버 클래스: 멀티스레딩 기능 추가한 TCP 서버 상속 정의
 class ChatServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass  # 추가 설정 없음
 
