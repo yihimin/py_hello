@@ -8,6 +8,12 @@ class MyHandler(socketserver.BaseRequestHandler):
             if username != exclude:
                 sock.send(msg.encode())
 
+    def send_user_list(self):
+        user_list_msg = "/users:" + ",".join(self.users.keys())
+        for username, (sock, addr) in self.users.items():
+            sock.send(user_list_msg.encode())
+
+
     def sendTo(self, target, msg):
         if target in self.users:
             self.users[target][0].send(msg.encode())
